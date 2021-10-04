@@ -41,11 +41,13 @@ git checkout main
 git commit -m 'Add SOLUTION.md'
 
 upd. Удаление коммита от 16 Июня
-git chekout main^
-git rebase -i 9831f41028f88299f435a03c1c66c152ae3df963
+git checkout airflow/v1-8-stable
+git rebase -i 6fa52cf3109b2c1a9598c3ddd029503380b1a8b9
+git merge 857cab47525d6b4daa1210eef123fbbca17c3e21 --allow-unrelated-histories
 vim .gitignore
-vim README.md
-git add README.md .gitignore
-git rebase --continue
+vim README.md 
+git add README.md .gitignore 
+git commit
 git branch -f fix
+git push -f origin fix
 

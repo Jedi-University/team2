@@ -39,3 +39,13 @@ gedit SOLUTION.md &
 git add SOLUTION.md
 git checkout main	
 git commit -m 'Add SOLUTION.md'
+
+upd. Удаление коммита от 16 Июня
+git chekout main^
+git rebase -i 9831f41028f88299f435a03c1c66c152ae3df963
+vim .gitignore
+vim README.md
+git add README.md .gitignore
+git rebase --continue
+git branch -f fix
+

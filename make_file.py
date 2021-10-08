@@ -5,7 +5,7 @@ import json
 import os
 import shutil
 
-coin= 'bitcoin' if (len(sys.argv)<=1) else sys.argv[1]
+coin= 'ethereum' if (len(sys.argv)<=1) else sys.argv[1]
 period='365' if (len(sys.argv) <=2)  else sys.argv[2]
 
 url= 'https://api.coingecko.com/api/v3/coins/'+coin+'/ohlc?vs_currency=usd&days='+period

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -127,3 +128,6 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+=======
+coin_folder/ohlc.txt
+>>>>>>> c488f03 (add gitignore)

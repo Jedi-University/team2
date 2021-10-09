@@ -20,7 +20,7 @@ num_of_entries = 30
 temp = len(data) // num_of_entries
 num_of_files = temp if len(data) % num_of_entries == 0 else temp + 1
 for i in range(num_of_files):
-    with open(str(path.parent) + f"/0{i + 1}_entry.txt", "w") as file:
+    with open(str(path.parent) + f"/_entry-{i + 1}.txt", "w") as file:
         count = 0
         while count < num_of_entries:
             entry_number = i * num_of_entries + count

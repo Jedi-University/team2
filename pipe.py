@@ -1,25 +1,29 @@
 import os
 import subprocess
 import sys
-from tkinter import *  
+from tkinter import *
+from tkinter import messagebox
 
 def Make_file():
     coin = coinEntry.get()
     period = periodEntry.get()
 
-    subprocess.Popen([sys.executable, '01_make_file.py', coin, period])
+    messagebox.showinfo('', 'running 01_make_file.py')
+    subprocess.Popen([sys.executable, path + '/01_make_file.py', coin, period])    
 
 def Divide_into_files():
-    print("Div")
-    #subprocess.Popen(['python3'])
-
+    messagebox.showinfo('', 'running 2_division_into_files.py')
+    subprocess.Popen([sys.executable, path + '/02_division_into_files.py'])
+    
 def Make_files():
     Make_file()
     Divide_into_files()
 
 def Count_SMA30():
-    subprocess.Popen([sys.executable, '03_mean_analyzer.py'])
+    messagebox.showinfo('', 'running 03_mean_analyzer.py')
+    subprocess.Popen([sys.executable, path + '/03_mean_analyzer.py'])
 
+path = os.path.realpath('./')
 window = Tk()
 window.title("pipe.py")
 window.geometry('250x150') 
@@ -43,7 +47,7 @@ periodEntry.grid(column = 1, row = 1)
 btnDiv = Button(window, text = "Divide into files", command = Divide_into_files)
 btnDiv.grid(column = 1, row = 2)
 
-btnMakeDiv = Button(window, text = "", command = Make_files)
+btnMakeDiv = Button(window, text = "Make files", command = Make_files)
 btnMakeDiv.grid(column = 0, row = 3)
 
 btnCount = Button(window, text = "Count SMA30", command = Count_SMA30)

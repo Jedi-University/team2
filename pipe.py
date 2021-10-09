@@ -1,12 +1,13 @@
 import os
 import subprocess
+import sys
 from tkinter import *  
 
 def Make_file():
     coin = coinEntry.get()
     period = periodEntry.get()
 
-    subprocess.Popen(['python3', 'make_file.py', coin, period])
+    subprocess.Popen([sys.executable, '01_make_file.py', coin, period])
 
 def Divide_into_files():
     print("Div")
@@ -17,11 +18,11 @@ def Make_files():
     Divide_into_files()
 
 def Count_SMA30():
-    print("SMA30")
+    subprocess.Popen([sys.executable, '03_mean_analyzer.py'])
 
-window = Tk()  
-window.title("")  
-window.geometry('400x250') 
+window = Tk()
+window.title("pipe.py")
+window.geometry('250x150') 
 
 coinLbl = Label(window, text = "Coin:")
 coinLbl.grid(column = 0, row = 0)
@@ -43,9 +44,9 @@ btnDiv = Button(window, text = "Divide into files", command = Divide_into_files)
 btnDiv.grid(column = 1, row = 2)
 
 btnMakeDiv = Button(window, text = "", command = Make_files)
-btnMakeDiv.grid(column = 2, row = 2)
+btnMakeDiv.grid(column = 0, row = 3)
 
-btnCount = Button(window, text = "", command = Count_SMA30)
-btnCount.grid(column = 3, row = 2)
+btnCount = Button(window, text = "Count SMA30", command = Count_SMA30)
+btnCount.grid(column = 1, row = 3)
 
 window.mainloop()

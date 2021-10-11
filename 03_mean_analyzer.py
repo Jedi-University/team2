@@ -13,10 +13,11 @@ def my_mean(data):  # incoming_array
     acc = 0
     for i in data:
         acc += i[4]
-    return acc / len(data)
+    return acc / float(len(data))
 
 
 def my_filter(data):
+    data=digitizer(data)
     acc = []
     for i in data:
         acc.append(i) if i[4] > my_mean(data) else None
@@ -33,6 +34,7 @@ try:
 except OSError:
     pass
 
+# os.remove(new_file_path)
 
 for file in os.listdir(directory):
     filename = os.fsdecode(file)
@@ -42,8 +44,7 @@ for file in os.listdir(directory):
             # data = f.read()
             reader=csv.reader(f)
             data = list(reader)  # string to list
-            data = digitizer(data)
+            filtered_data=my_filter(data)
         with open(new_file_path, "a+",newline='') as f:
-            # f.write(str(my_filter(data)))
             csv_out=csv.writer(f)
-            csv_out.writerows(data[index] for index in range(len(data)))
+            csv_out.writerows(filtered_data[index] for index in range(len(filtered_data)))

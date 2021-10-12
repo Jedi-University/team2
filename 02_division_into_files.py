@@ -7,7 +7,7 @@ file_path = "coin_folder/ohlc.txt"
 path = pathlib.Path(file_path)
 if not path.exists():
     print("There is no such file or directory!")
-    sys.exit()
+    sys.exit(1)
 
 with open(file_path, "r") as coin_data:
     data = coin_data.read()

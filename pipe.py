@@ -1,6 +1,7 @@
 import os
 import subprocess
 import sys
+import pathlib
 
 from tkinter import *
 from tkinter import messagebox
@@ -16,7 +17,11 @@ def Make_file():
 
 def Divide_into_files():
     messagebox.showinfo('', 'running 2_division_into_files.py')
-    subprocess.Popen([sys.executable, path + '/02_division_into_files.py'])
+    try:
+        subprocess.check_call([sys.executable, path + '/02_division_into_files.py'])
+    except subprocess.CalledProcessError:
+        messagebox.showinfo('', 'There is no such file or directory!')
+    
 
 
 def Make_files():
@@ -26,7 +31,10 @@ def Make_files():
 
 def Count_SMA30():
     messagebox.showinfo('', 'running 03_mean_analyzer.py')
-    subprocess.Popen([sys.executable, path + '/03_mean_analyzer.py'])
+    try:
+        subprocess.check_call([sys.executable, path + '/03_mean_analyzer.py'])
+    except subprocess.CalledProcessError:
+        messagebox.showinfo('', 'There is no "coin_folder" directory!')
 
 
 path = os.path.realpath('./')

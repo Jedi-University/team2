@@ -3,19 +3,11 @@ import json
 import time
 import heapq
 
-def get_names(text):
+def get_names(orgs):
     names = []
-    text = text.strip('[]/{/}')
-    entries = text.split("},{")
-    for entry in entries:
-        names.append(entry[9:entry.find(',')-1])
+    for entry in orgs:
+        names.append(entry['login'])
     return names
-
-
-def get_last_id(text):
-    start = text.rfind('"id":')
-    end = text.find(",",start)
-    return text[start+5:end]
 
 
 def get_orgs(pages):
@@ -23,28 +15,42 @@ def get_orgs(pages):
     text = ''
     iteration = 0
     while iteration < pages:
-        response_API = requests.get(f'https://api.github.com/organizations?since={last_id}&per_page=100')
-        text = response_API.text
-        last_id = get_last_id(text)
+        response_API = requests.get(f'https://api.github.com/organizations?since={last_id}&per_page=100').json()
+        last_id = response_API[-1]['id']
         iteration += 1
-        yield text
+        yield response_API
     
 
 def get_repos(name):
-    pass
+    global repoStars
+    response_API = requests.get(f'https://api.github.com/orgs/{name}/repos').json()
+    for repo in response_API:
+        id = repo['id']
+        #print(id)
+        stars = repo['stargazers_count']
+        #print(stars)
+        repoStars[id] = stars
+    return response_API
 
 
 last_id = 0
-text = ''
-
-
-
-
+orgs = []
+repoStars = {}
+repos = []
 
 for i in get_orgs(2):
-    text += str(i)
-names = get_names(text)
-print(names)
+    orgs.extend(i)
+names = get_names(orgs)
+#print(names)
+repos.extend(get_repos("Jedi-University"))
+for i in range(20):
+    repos.extend(get_repos(names[i]))
+#for name in names:
+#    repos.extend(get_repos(name))
+repoStars = heapq.nlargest(20, repoStars.items(), key=lambda i: i[1])
+for repo in repos:
+    print(repo['full_name'])
+print(repoStars)
 #to_file = text
 #filepath = './1'
 #with open(filepath, "w") as f:

@@ -22,8 +22,13 @@ class Human():
 
 class Student(Human):
     def __init__(self, name, age, gender, classnum, spec):
-        self.name, self.age, self.gender, self.classnum, self.spec = name, age, gender, classnum, spec
+        super().__init__(name, age, gender)
+        self.classnum, self.spec = classnum, spec
     
+
+    def info(self):
+        return(*super().info(), self.classnum, self.spec)
+
 
     def sum(self, a, b):
         return(a+b)
@@ -31,11 +36,16 @@ class Student(Human):
 
 class Teacher(Human):
     def __init__(self, name, age, gender, subject_name, work_experience):
-        self.name, self.age, self.gender, self.subject_name, self.work_experience = name, age, gender, subject_name, work_experience
+        super().__init__(name, age, gender)
+        self.subject_name, self.work_experience = subject_name, work_experience
+
+
+    def info(self):
+        return(*super().info(), self.subject_name, self.work_experience)
 
 
     def speak(self, t):
-        return(t + self.work_experience + 10)
+        return(super().speak(t) + self.work_experience)
 
 
     def answer(self, v):

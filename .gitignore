@@ -129,4 +129,4 @@ dmypy.json
 .pyre/
 .idea
 *.db
-azavarzin/hw-top-repos/secrets.py
+hw-top-repos/github_access.py

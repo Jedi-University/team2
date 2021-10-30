@@ -159,6 +159,9 @@ unittests.cfg
 error.log
 unittests.db
 rat-results.txt
+
+#auth file
+github.auth
 /.eggs/
 /.tox/
 venv

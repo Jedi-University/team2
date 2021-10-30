@@ -2,16 +2,16 @@ import time
 
 
 def calc_exec_time(min=False):
-    def _calc_exec_time(function):
+    def _calc_exec_time(f):
         def wrapper(*args, **kwargs):
-            print(f"Function name: {function.__name__}")
+            print(f"Function name: {f.__name__}")
             start = time.time()
-            res = function(*args, **kwargs)
+            result = f(*args, **kwargs)
             end = time.time()
             total = (end - start) / 60 if min else end - start
             units_of_time = "min." if min else "sec."
             print(f"Function execution time: {total} {units_of_time}\n")
-            return res
+            return result
         return wrapper
     return _calc_exec_time
 
@@ -23,9 +23,7 @@ def a(x, y):
 
 @calc_exec_time(min=False)
 def sequence_square(limit):
-    for i in range(1, limit):
-        print(i ** 10, end=" ")
-    print()
+    return [x ** 10 for x in range(limit)]
 
 
 @calc_exec_time(min=True)
@@ -38,10 +36,27 @@ def fibonacci(n):
     return fib2
 
 
+@calc_exec_time(min=True)
+def fibonacci_rec(n):
+    return _fibonacci_rec(n)
+
+
+def _fibonacci_rec(n):
+    if n in (1, 2):
+        return 1
+    return _fibonacci_rec(n - 1) + _fibonacci_rec(n - 2)
+
+
 if __name__ == '__main__':
     a(10, 10)
-    sequence_square(1000)
+    sequence_square(1_000_000)
 
-    number = 3999999
-    fibonacci_number = fibonacci(3999999)
-    print(f"the {number} fibonacci number is {fibonacci_number}")
+    number = 5_000_000
+    print(f"(loop) The {number} fibonacci number")
+    fibonacci(number)
+
+    print()
+
+    number = 50
+    print(f"(recursion) The {number} fibonacci number")
+    fibonacci_rec(number)

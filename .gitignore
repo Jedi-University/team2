@@ -129,4 +129,6 @@ dmypy.json
 .pyre/
 .idea
 *.db
+*.ini
+
 hw-top-repos/github_access.py

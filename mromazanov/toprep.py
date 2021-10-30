@@ -2,18 +2,21 @@ import json
 import heapq
 import requests
 from requests.sessions import session
+from os import read
 from sqlalchemy import create_engine, MetaData, Table, Integer, String, Column, DateTime, ForeignKey, Numeric, engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import mapper, Session
 from tkinter import *
-from tkinter import messagebox, scrolledtext 
+from tkinter import messagebox, scrolledtext
 
 Base = declarative_base()
 metadata = MetaData()
 
 
 def auth():
-    return ('Client ID', 'Client secret')
+    with open('github.auth', 'r') as auth:
+        s = auth.read().strip().split(',')
+    return (s[0], s[1])
 
 
 class Top(Base):
@@ -36,15 +39,16 @@ def get_orgs(pages):
     text = ''
     iteration = 0
     while iteration < pages:
-        response_API = requests.get(f'https://api.github.com/organizations?since={last_id}&per_page=100', auth=auth()).json()
+        response_API = requests.get(f'https://api.github.com/organizations'
+            f'?since={last_id}&per_page=100', auth=auth).json()
         last_id = response_API[-1]['id']
         iteration += 1
         yield response_API
-    
+
 
 def get_repos(name):
     global repoStars, repoNames
-    response_API = requests.get(f'https://api.github.com/orgs/{name}/repos', auth=auth()).json()
+    response_API = requests.get(f'https://api.github.com/orgs/{name}/repos', auth=auth).json()
     for repo in response_API:
         id = repo['id']
         name = repo['full_name']
@@ -67,13 +71,17 @@ def Create_db():
     for name in names:
         repos.extend(get_repos(name))
     repoStars = heapq.nlargest(20, repoStars.items(), key=lambda i: i[1])
-    toprepos = []
+    topRepos = []
     for repo in repoStars:
-        toprepos.append(Top(id = repo[0], org_name = repoNames[repo[0]].split('/')[0], repo_name = repoNames[repo[0]].split('/')[1],\
-            stars_count = repo[1]))
-    session.add_all(toprepos)
+        topRepos.append(Top(id = repo[0], org_name = repoNames[repo[0]].split('/')[0], repo_name = repoNames[repo[0]].split('/')[1], stars_count = repo[1]))
+    session.add_all(topRepos)
     session.commit()
     messagebox.showinfo('', 'Успешно')
+    last_id = 0
+    orgs = []
+    repoStars = {}
+    repoNames = {}
+    repos = []
 
 
 def Show_db():
@@ -87,27 +95,26 @@ def Show_db():
     for item in show:
         txt.insert(INSERT, f'{item.id}\t\t{item.org_name}\t\t{item.repo_name}\t\t{item.stars_count}\n')
     txt.grid(column=0, row=1)
-    Pbtn = Button(showWin, text="ok", command=showWin.destroy)
-    Pbtn.grid(column=0, row=0)
+    okBtn = Button(showWin, text="ok", command=showWin.destroy)
+    okBtn.grid(column=0, row=0)
 
 
 engine = create_engine('sqlite:///reptop.db')
 engine.connect()
 session = Session(bind=engine)
 
+auth = auth()
 last_id = 0
 orgs = []
 repoStars = {}
 repoNames = {}
 repos = []
 
-
 window = Tk()
 window.geometry('200x50')
 
-btnCreate = Button(window, text="Create db", command=Create_db)  
+btnCreate = Button(window, text="Create db", command=Create_db)
 btnCreate.grid(column=0, row=0)
-
 
 btnShow = Button(window, text="Show db", command=Show_db)
 btnShow.grid(column=1, row=0)

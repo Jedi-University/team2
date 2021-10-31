@@ -162,6 +162,10 @@ rat-results.txt
 
 #auth file
 github.auth
+
+#todo file
+todo
+
 /.eggs/
 /.tox/
 venv

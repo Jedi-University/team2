@@ -166,6 +166,8 @@ github.auth
 #todo file
 todo
 
+mromazanov/github_top/.gitignore
+
 /.eggs/
 /.tox/
 venv

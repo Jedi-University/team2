@@ -1,15 +1,15 @@
 from config import config
-from top import get_session, Top
+from github_db import GitHubDB
 
 
-def show():
-    session = get_session()
-    top_repos = session.query(Top).all()
+def show() -> None:
+    db = GitHubDB()
+    top_repos = db.get_whole_top()
     id, org_name, repo_name, stars_count = "id", "org_name", "repo_name", "stars_count"
 
     print(f"Show top {config['GitHub']['top_number']} repositories:")
-    print(f"{id:>15} {org_name:>20} {repo_name:>25} {stars_count:>15}")
-    print("-" * 80)
+    print(f"{id:>15} {org_name:>30} {repo_name:>30} {stars_count:>15}")
+    print("-" * 95)
     for repo in top_repos:
-        print(f"{repo.id:>15} {repo.org_name:>20} {repo.repo_name:>25} {repo.stars_count:>15}")
-    print(f"Count: {session.query(Top).count()}")
+        print(f"{repo.id:>15} {repo.org_name:>30} {repo.repo_name:>30} {repo.stars_count:>15}")
+    print(f"Count: {db.get_top_size()}")

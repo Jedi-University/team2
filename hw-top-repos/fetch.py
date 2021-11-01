@@ -1,14 +1,15 @@
 import requests
 
 from config import config
+from distribution.builder import Builder
 from distribution.processes.process_builder import ProcessBuilder
 from distribution.threads.thread_builder import ThreadBuilder
-from top import get_session, Top, drop_db
+from github_db import GitHubDB, Top
 
 headers = {"Authorization": f"token {config['GitHub']['access_token']}"}
 
 
-def fetch():
+def fetch() -> None:
     print("Data is taken from github:")
     num_of_orgs = int(config["GitHub"]["num_of_orgs"])
     repos_urls_with_id = get_repos_urls_with_id(num_of_orgs=num_of_orgs)
@@ -26,95 +27,91 @@ def fetch():
     print("done!")
 
 
-def get_repos_urls_with_id(num_of_orgs=100) -> dict:
-    data = {}
-    max_org = 100
-    if num_of_orgs <= max_org:
-        data.update(get_given_num_of_repos_urls(per_page=num_of_orgs))
+def get_repos_urls_with_id(num_of_orgs: int = 100) -> dict:
+    repos_urls_with_id = {}
+    max_orgs = 100
+    if num_of_orgs <= max_orgs:
+        repos_urls_with_id.update(get_given_num_of_repos_urls(per_page=num_of_orgs))
     else:
-        for _ in range(num_of_orgs // max_org):
-            data.update(get_given_num_of_repos_urls(since=get_since(data)))
-        
-        remain = num_of_orgs % max_org
+        for _ in range(num_of_orgs // max_orgs):
+            repos_urls_with_id.update(get_given_num_of_repos_urls(since=get_since(repos_urls_with_id)))
+
+        remain = num_of_orgs % max_orgs
         if remain != 0:
-            data.update(get_given_num_of_repos_urls(per_page=remain, since=get_since(data)))
-    return data
+            repos_urls_with_id.update(get_given_num_of_repos_urls(per_page=remain, since=get_since(repos_urls_with_id)))
+
+    return repos_urls_with_id
 
 
-def get_given_num_of_repos_urls(per_page=100, since=0) -> dict:
+def get_given_num_of_repos_urls(per_page: int = 100, since: int = 0) -> dict:
     url = "https://api.github.com/organizations"
     params = {"per_page": per_page, "since": since}
     response = requests.get(url, params=params, headers=headers).json()
-    data = {org["id"]: org["repos_url"] for org in response}
-    return data
+    repos_urls_with_id = {org["id"]: org["repos_url"] for org in response}
+    return repos_urls_with_id
 
 
-def get_since(dictionary) -> int:
+def get_since(dictionary: dict[int, str]) -> int:
     return 0 if len(dictionary) == 0 else list(dictionary.keys())[-1]
 
 
-def get_builder(data):
+def get_builder(repos_urls: tuple[str]) -> Builder:
     # плюсы: будет создан только нужный строитель
     # минусы: при добавлении новых строителей падает читаемость и лаконичность кода
     if config["Build"]["builder"] == "thread":
-        return ThreadBuilder(data)
+        return ThreadBuilder(repos_urls)
     elif config["Build"]["builder"] == "process":
-        return ProcessBuilder(data)
+        return ProcessBuilder(repos_urls)
     else:
         raise Exception("There is no such builder")
 
 
-def get_builder_bad_way(data):
+def get_builder_bad_way(repos_urls: tuple[str]) -> Builder:
     # плюсы: легко модифицировать при появлении новых строителей
     # минусы: в словаре создаются все экземпляры строителей, их может быть очень много или они могут быть тяжеловесными
     builders = {
-        "thread": ThreadBuilder(data),
-        "process": ProcessBuilder(data)
+        "thread": ThreadBuilder(repos_urls),
+        "process": ProcessBuilder(repos_urls)
     }
     return builders[config["Build"]["builder"]]
 
 
-def load_repos_into_db(repos):
-    drop_db()
-    session = get_session()
-    for repo in repos:
-        top = Top(
-            id=repo["id"],
-            org_name=repo["org_name"],
-            repo_name=repo["repo_name"],
-            stars_count=repo["stars_count"]
-        )
-        session.add(top)
-    session.commit()
+def load_repos_into_db(repos: tuple[dict]) -> None:
+    db = GitHubDB(clear_data=True)
+    topic = [Top(**repo) for repo in repos]
+    db.add_all(topic)
 
 
-def get_repos_data(repos_urls) -> list:
-    data = []
+def get_repos_data(repos_urls: tuple[str]) -> tuple[dict]:
+    repos = []
     for counter, url in enumerate(repos_urls):
         print(f"{counter + 1}/{len(repos_urls)} organizations")
-        repos = get_all_repos(url)
-        for inner_counter, repo in enumerate(repos):
-            # print(f"\t{inner_counter + 1}/{len(repos)} repositories")
-            data.append({
-                "id": repo["id"],
-                "org_name": repo["owner"]["login"],
-                "repo_name": repo["name"],
-                "stars_count": repo["stargazers_count"]
-            })
-    return get_top(data, int(config["GitHub"]["top_number"]))
+        repos.extend(get_all_repos(url))
+
+    return get_top(repos, int(config["GitHub"]["top_number"]))
 
 
-def get_all_repos(url) -> list:
+def get_all_repos(url: str) -> tuple[dict]:
     page = 1
     repos = []
     response = requests.get(url, headers=headers).json()
     while response:
         page += 1
-        repos.extend(response)
+        repos.extend(map(mapping_repo, response))
         params = {"page": page}
         response = requests.get(url, params=params, headers=headers).json()
-    return repos
+
+    return tuple(repos)
 
 
-def get_top(data, top_number):
-    return sorted(data, key=lambda rd: rd["stars_count"], reverse=True)[:top_number]
+def get_top(repos_data: list[dict], top_number: int) -> tuple[dict]:
+    return tuple(sorted(repos_data, key=lambda repo: repo["stars_count"], reverse=True))[:top_number]
+
+
+def mapping_repo(repo: dict) -> dict:
+    return {
+        "id": repo["id"],
+        "org_name": repo["owner"]["login"],
+        "repo_name": repo["name"],
+        "stars_count": repo["stargazers_count"]
+    }

@@ -1,21 +1,13 @@
-from multiprocessing import queues
-from multiprocessing.queues import Queue
 from tkinter.font import names
 import requests
 import heapq
-import multiprocessing
-from queue import Queue
-import threading
-from threading import Thread
 
 
-def get_repos(name, auth, results):
-    thread_name = threading.current_thread().name
-    print(f'Старт {thread_name}')
+def get_repos(name, auth):
+    global repo_stars, repo_names
     response_API = [1]
     page = 1
     repos = []
-    print(name)
     while True:
         response = requests.get(f'https://api.github.com/orgs/{name}/repos?per_page=100&page={page}', auth=auth)
         response_API = response.json()
@@ -24,13 +16,15 @@ def get_repos(name, auth, results):
                 id = repo['id']
                 name = repo['full_name']
                 stars = repo['stargazers_count']
-                results.put([id,name,stars])
-                print(id)
+                repo_stars[id] = stars
+                repo_names[id] = name
             except TypeError:
                 break
         page += 1
         if (response.status_code == 404) or (response_API == []):
             break
+        repos.extend(response_API)
+    return repos
 
 
 def get_names(orgs):
@@ -52,28 +46,12 @@ def get_orgs(pages, auth):
 
 
 def create_top(auth):
-    global last_id, orgs, repo_names, repo_stars
+    global last_id, orgs, repo_names, repo_stars, repos
     for org in get_orgs(2, auth):
         orgs.extend(org)
     names = get_names(orgs)
-    #names = ['Jedi-University']
-
-    #queue = Queue()
-    #for name in names:
-    #    queue.put(name)
-    #while queue.empty() is False:
-    #    threads = []
-    #    for i in range(8):
-    #        threads.append(Thread(target = get_repos, args = (queue.get(), auth, results)))
-    #        threads[i].start()
-    #    for i in range(8):
-    #        threads[i].join()
-
-    while results.empty() is False:
-        elem = results.get()
-        print(elem)
-        repo_names[elem[0]] = elem[1]
-        repo_stars[elem[0]] = elem[2]
+    for name in names:
+       repos.extend(get_repos(name, auth))
     repo_stars = heapq.nlargest(20, repo_stars.items(), key=lambda i: i[1])
 
     top_repos = []
@@ -84,6 +62,7 @@ def create_top(auth):
     orgs = []
     repo_stars = {}
     repo_names = {}
+    repos = []
     return top_repos
 
 
@@ -91,4 +70,4 @@ last_id = 0
 orgs = []
 repo_stars = {}
 repo_names = {}
-results = multiprocessing.Queue()
+repos = []

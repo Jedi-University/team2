@@ -56,24 +56,12 @@ def get_since(dictionary: dict[int, str]) -> int:
 
 
 def get_builder(repos_urls: tuple[str]) -> Builder:
-    # плюсы: будет создан только нужный строитель
-    # минусы: при добавлении новых строителей падает читаемость и лаконичность кода
-    if config["Build"]["builder"] == "thread":
-        return ThreadBuilder(repos_urls)
-    elif config["Build"]["builder"] == "process":
-        return ProcessBuilder(repos_urls)
-    else:
-        raise Exception("There is no such builder")
-
-
-def get_builder_bad_way(repos_urls: tuple[str]) -> Builder:
     # плюсы: легко модифицировать при появлении новых строителей
-    # минусы: в словаре создаются все экземпляры строителей, их может быть очень много или они могут быть тяжеловесными
     builders = {
-        "thread": ThreadBuilder(repos_urls),
-        "process": ProcessBuilder(repos_urls)
+        "thread": ThreadBuilder,
+        "process": ProcessBuilder
     }
-    return builders[config["Build"]["builder"]]
+    return builders[config["Build"]["builder"]](repos_urls)
 
 
 def load_repos_into_db(repos: tuple[dict]) -> None:

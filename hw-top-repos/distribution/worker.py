@@ -11,5 +11,5 @@ class Worker(ABC):
         self._data = splitting_data_into_equal_parts(data, size)
 
     @abstractmethod
-    def do_work(self, func: Callable[[tuple[str]], tuple[str]]):
+    def do_work(self, func: Callable[[tuple[str]], tuple[dict]]):
         pass

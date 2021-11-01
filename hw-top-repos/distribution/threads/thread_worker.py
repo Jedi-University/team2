@@ -7,7 +7,7 @@ from ..worker import Worker
 
 class ThreadWorker(Worker):
 
-    def do_work(self, func: Callable[[tuple[str]], tuple[str]]):
+    def do_work(self, func: Callable[[tuple[str]], tuple[dict]]):
         threads = []
         queue = Queue()
         for urls in self._data:

@@ -7,7 +7,7 @@ from ..worker import Worker
 
 class ProcessWorker(Worker):
 
-    def do_work(self, func: Callable[[tuple[str]], tuple[str]]):
+    def do_work(self, func: Callable[[tuple[str]], tuple[dict]]):
         with ProcessPoolExecutor(max_workers=len(self._data)) as executor:
             result = executor.map(func, self._data)
 

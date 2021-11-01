@@ -1,3 +1,6 @@
+#в файле задачи, которые были указаны для выполнения в общей таблице
+#задачи разделены множественным комментарием ########
+#hackerrank profile: https://www.hackerrank.com/budden1
 
 import math
 import os

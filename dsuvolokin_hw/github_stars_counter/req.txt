@@ -1,0 +1,4 @@
+requests
+json
+sqlalchemy=1.4
+os

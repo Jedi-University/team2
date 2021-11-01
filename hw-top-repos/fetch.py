@@ -13,7 +13,7 @@ def fetch() -> None:
     print("Data is taken from github:")
     num_of_orgs = int(config["GitHub"]["num_of_orgs"])
     repos_urls_with_id = get_repos_urls_with_id(num_of_orgs=num_of_orgs)
-    repos_urls = list(repos_urls_with_id.values())
+    repos_urls = tuple(repos_urls_with_id.values())
     repos_data = get_builder(repos_urls).worker.do_work(get_repos_data)
     print("done!")
 
@@ -27,7 +27,7 @@ def fetch() -> None:
     print("done!")
 
 
-def get_repos_urls_with_id(num_of_orgs: int = 100) -> dict:
+def get_repos_urls_with_id(num_of_orgs: int = 100) -> dict[int, str]:
     repos_urls_with_id = {}
     max_orgs = 100
     if num_of_orgs <= max_orgs:
@@ -43,7 +43,7 @@ def get_repos_urls_with_id(num_of_orgs: int = 100) -> dict:
     return repos_urls_with_id
 
 
-def get_given_num_of_repos_urls(per_page: int = 100, since: int = 0) -> dict:
+def get_given_num_of_repos_urls(per_page: int = 100, since: int = 0) -> dict[int, str]:
     url = "https://api.github.com/organizations"
     params = {"per_page": per_page, "since": since}
     response = requests.get(url, params=params, headers=headers).json()

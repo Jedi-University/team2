@@ -1,12 +1,13 @@
 from multiprocessing import Queue
 from threading import Thread
+from typing import Callable
 
 from ..worker import Worker
 
 
 class ThreadWorker(Worker):
 
-    def do_work(self, func):
+    def do_work(self, func: Callable[[tuple[str]], tuple[str]]):
         threads = []
         queue = Queue()
         for urls in self._data:

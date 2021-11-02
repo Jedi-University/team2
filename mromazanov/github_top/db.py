@@ -21,12 +21,12 @@ class Top(base):
         return (self.id, sep, self.org_name, sep, self.repo_name, sep, self.stars_count, '\n')
 
 
-def create_db(auth):
+def create_db(r_var, auth):
     global repo_stars, repo_names
     base.metadata.drop_all(engine)
     base.metadata.create_all(engine)
 
-    top_repos_dict = githubapi.create_top(auth)
+    top_repos_dict = githubapi.create_top(r_var, auth)
     top_repos = []
     for repo in top_repos_dict:
         top_repos.append(Top(id = repo['id'], org_name = repo['org_name'], repo_name = repo['repo_name'], stars_count = repo['stars_count']))

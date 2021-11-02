@@ -1,21 +1,25 @@
+import multiprocessing
 from multiprocessing import queues
 from multiprocessing.queues import Queue
-from tkinter.font import names
+
 import requests
 import heapq
-import multiprocessing
+
 from queue import Queue
-import threading
-from threading import Thread
+
+import builder
 
 
-def get_repos(name, auth, results):
-    thread_name = threading.current_thread().name
-    print(f'Старт {thread_name}')
+def get_repos(namequeue, auth, results):
+    #thread_name = threading.current_thread().name
+    #print(f'Старт {thread_name}')
+    name_proc = multiprocessing.current_process().name
+    #print(name_proc)
     response_API = [1]
     page = 1
     repos = []
-    print(name)
+    name = namequeue.get()
+    #print(name)
     while True:
         response = requests.get(f'https://api.github.com/orgs/{name}/repos?per_page=100&page={page}', auth=auth)
         response_API = response.json()
@@ -25,12 +29,14 @@ def get_repos(name, auth, results):
                 name = repo['full_name']
                 stars = repo['stargazers_count']
                 results.put([id,name,stars])
-                print(id)
+                #print(id)
             except TypeError:
                 break
         page += 1
         if (response.status_code == 404) or (response_API == []):
+            #print(f'\\{name}')
             break
+    #print(f'//{name_proc}')
 
 
 def get_names(orgs):
@@ -51,27 +57,25 @@ def get_orgs(pages, auth):
         yield response_API
 
 
-def create_top(auth):
+def create_top(r_var, auth):
     global last_id, orgs, repo_names, repo_stars
     for org in get_orgs(2, auth):
         orgs.extend(org)
     names = get_names(orgs)
     #names = ['Jedi-University']
 
-    #queue = Queue()
-    #for name in names:
-    #    queue.put(name)
-    #while queue.empty() is False:
-    #    threads = []
-    #    for i in range(8):
-    #        threads.append(Thread(target = get_repos, args = (queue.get(), auth, results)))
-    #        threads[i].start()
-    #    for i in range(8):
-    #        threads[i].join()
+    queue = multiprocessing.Queue()
+    for name in names:
+        queue.put(name)
+
+    if r_var.get() == 0:
+        results = builder.Thread_Worker.work(get_repos, queue, auth)
+    else:
+        results = builder.Process_Worker.work(get_repos, queue, auth)
 
     while results.empty() is False:
         elem = results.get()
-        print(elem)
+        #print(elem)
         repo_names[elem[0]] = elem[1]
         repo_stars[elem[0]] = elem[2]
     repo_stars = heapq.nlargest(20, repo_stars.items(), key=lambda i: i[1])
@@ -91,4 +95,3 @@ last_id = 0
 orgs = []
 repo_stars = {}
 repo_names = {}
-results = multiprocessing.Queue()

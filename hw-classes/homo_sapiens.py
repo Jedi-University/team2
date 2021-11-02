@@ -43,7 +43,7 @@ class HomoSapiens:
         if 0 < age < HomoSapiens.LIMIT_OF_HUMAN_LIFE:
             self.__age = age
         else:
-            raise ValueError('Impossible age value.')
+            raise ValueError("Impossible age value.")
 
     @property
     def gender(self):

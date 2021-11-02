@@ -2,9 +2,9 @@ from homo_sapiens import HomoSapiens, Gender
 
 
 class Teacher(HomoSapiens):
-
-    def __init__(self, name: str, age: int, gender: Gender,
-                 discipline_name: str, experience: int):
+    def __init__(
+        self, name: str, age: int, gender: Gender, discipline_name: str, experience: int
+    ):
         super().__init__(self, name, age, gender)
         self.__discipline_name = discipline_name
         self.__experience = experience
@@ -28,4 +28,4 @@ class Teacher(HomoSapiens):
         if experience >= 0:
             self.__experience = experience
         else:
-            raise ValueError('Invalid experience value.')
+            raise ValueError("Invalid experience value.")

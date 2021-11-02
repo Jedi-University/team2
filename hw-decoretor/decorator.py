@@ -12,7 +12,9 @@ def calc_exec_time(min=False):
             units_of_time = "min." if min else "sec."
             print(f"Function execution time: {total} {units_of_time}\n")
             return result
+
         return wrapper
+
     return _calc_exec_time
 
 
@@ -47,7 +49,7 @@ def _fibonacci_rec(n):
     return _fibonacci_rec(n - 1) + _fibonacci_rec(n - 2)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     a(10, 10)
     sequence_square(1_000_000)
 

@@ -34,11 +34,17 @@ def get_repos_urls_with_id(num_of_orgs: int = 100) -> dict[int, str]:
         repos_urls_with_id.update(get_given_num_of_repos_urls(per_page=num_of_orgs))
     else:
         for _ in range(num_of_orgs // max_orgs):
-            repos_urls_with_id.update(get_given_num_of_repos_urls(since=get_since(repos_urls_with_id)))
+            repos_urls_with_id.update(
+                get_given_num_of_repos_urls(since=get_since(repos_urls_with_id))
+            )
 
         remain = num_of_orgs % max_orgs
         if remain != 0:
-            repos_urls_with_id.update(get_given_num_of_repos_urls(per_page=remain, since=get_since(repos_urls_with_id)))
+            repos_urls_with_id.update(
+                get_given_num_of_repos_urls(
+                    per_page=remain, since=get_since(repos_urls_with_id)
+                )
+            )
 
     return repos_urls_with_id
 
@@ -57,10 +63,7 @@ def get_since(dictionary: dict[int, str]) -> int:
 
 def get_builder(repos_urls: tuple[str]) -> Builder:
     # плюсы: легко модифицировать при появлении новых строителей
-    builders = {
-        "thread": ThreadBuilder,
-        "process": ProcessBuilder
-    }
+    builders = {"thread": ThreadBuilder, "process": ProcessBuilder}
     return builders[config["Build"]["builder"]](repos_urls)
 
 
@@ -93,7 +96,9 @@ def get_all_repos(url: str) -> tuple[dict]:
 
 
 def get_top(repos_data: list[dict], top_number: int) -> tuple[dict]:
-    return tuple(sorted(repos_data, key=lambda repo: repo["stars_count"], reverse=True))[:top_number]
+    return tuple(
+        sorted(repos_data, key=lambda repo: repo["stars_count"], reverse=True)
+    )[:top_number]
 
 
 def mapping_repo(repo: dict) -> dict:
@@ -101,5 +106,5 @@ def mapping_repo(repo: dict) -> dict:
         "id": repo["id"],
         "org_name": repo["owner"]["login"],
         "repo_name": repo["name"],
-        "stars_count": repo["stargazers_count"]
+        "stars_count": repo["stargazers_count"],
     }

@@ -21,7 +21,7 @@ def caller_old(func, c, j):
     return lambda a, b: func(c + a, j + b)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # no decorator
     f = caller_old(a_old, "100", "200")
     f("h", "z")

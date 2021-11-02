@@ -3,7 +3,6 @@ from ..builder import Builder
 
 
 class ProcessBuilder(Builder):
-
     def __init__(self, data):
         super().__init__(data)
 

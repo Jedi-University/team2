@@ -1,6 +1,6 @@
 from configparser import ConfigParser
 
-from db.github_db import GitHubDB
+from db import GitHubDB
 from orchestrator import Orchestrator
 
 

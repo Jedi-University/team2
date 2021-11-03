@@ -3,7 +3,7 @@ from functools import reduce
 
 import aiohttp
 from aiohttp import ClientSession
-from api.api import GitHubAPI
+from api import GitHubAPI
 
 from ..repository_worker import RepositoryWorker
 from ..utils import mapping_repo

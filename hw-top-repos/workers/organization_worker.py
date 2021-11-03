@@ -1,4 +1,4 @@
-from api.api import GitHubAPI
+from api import GitHubAPI
 
 from .worker import Worker
 

@@ -1,10 +1,10 @@
 from configparser import ConfigParser
 
-from api.default_api import DefaultGitHubAPI, GitHubAPI
-from workers.database_worker import DatabaseWorker
-from workers.distributed_workers import AsyncRepositoryWorker, ThreadRepositoryWorker, ProcessRepositoryWorker
-from workers.organization_worker import OrganizationWorker
-from workers.repository_worker import RepositoryWorker
+from api import DefaultGitHubAPI, GitHubAPI
+from workers import AsyncRepositoryWorker, ThreadRepositoryWorker, ProcessRepositoryWorker
+from workers import DatabaseWorker
+from workers import OrganizationWorker
+from workers import RepositoryWorker
 
 
 class Orchestrator:

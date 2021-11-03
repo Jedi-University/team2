@@ -2,7 +2,7 @@ from concurrent.futures import ThreadPoolExecutor
 from functools import reduce
 from multiprocessing import cpu_count
 
-from api.api import GitHubAPI
+from api import GitHubAPI
 
 from ..repository_worker import RepositoryWorker
 from ..worker import Worker

@@ -1,4 +1,4 @@
-from api.api import GitHubAPI
+from api import GitHubAPI
 
 from .progress_bar import ConsoleProgressBar
 from .utils import mapping_repo

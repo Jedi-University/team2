@@ -1,0 +1,1 @@
+python3 '01_make_file.py' && python3 '02_division_into_files.py' && python3 '03_mean_analyzer.py'

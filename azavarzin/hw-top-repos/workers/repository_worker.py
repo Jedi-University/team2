@@ -11,12 +11,13 @@ class RepositoryWorker(Worker):
         self.api: GitHubAPI = api
 
         self.repository_data: list[dict] = list()
-        self.progress_bar = ConsoleProgressBar(f"{self.__class__.__name__} is working")
 
     def exec(self) -> list[dict]:
+        super().exec()
+        progress_bar = ConsoleProgressBar(f"Progress: ")
         for i, url in enumerate(self.repository_urls):
             self.repository_data.extend(self.get_repository(url))
-            self.progress_bar.update_progress(i + 1, len(self.repository_urls))
+            progress_bar.update_progress(i + 1, len(self.repository_urls))
 
         return self.repository_data
 

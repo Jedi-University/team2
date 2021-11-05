@@ -1,20 +1,10 @@
 import os
 
-from sqlalchemy import Integer, String, Column
 from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import Session
 
-Base = declarative_base()
-
-
-class Top(Base):
-    __tablename__ = "top"
-
-    id = Column(Integer, primary_key=True)
-    org_name = Column(String(100), nullable=False)
-    repo_name = Column(String(100), nullable=False)
-    stars_count = Column(Integer, nullable=False)
+from .base import Base
+from .top import Top
 
 
 class GitHubDB:

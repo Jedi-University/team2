@@ -9,7 +9,6 @@ class DefaultGitHubAPI(GitHubAPI):
             params = {}
 
         response = requests.get(url, params=params, headers=self.headers)
-        if response.status_code == 200:
-            return response.json()
-        else:
-            raise Exception(f"{response.json()['message']}")
+        assert response.status_code == 200, f"{response.json()['message']}"
+
+        return response.json()

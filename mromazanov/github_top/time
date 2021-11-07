@@ -1,4 +1,8 @@
-296.15581488609314
-38.83752751350403
-40.170215129852295
-18.761428356170654
+['Single_Thread_Orchestrator', 'Org_Worker', 'Repo_Worker', 'Filter_Worker', 'Db_Worker']
+Time elapsed:  267.7965588569641
+['Thread_Orchestrator', 'Org_Worker', 'Repo_Worker', 'Filter_Worker', 'Db_Worker']
+Time elapsed:  34.945189476013184
+['Process_Orchestrator', 'Org_Worker', 'Repo_Worker', 'Filter_Worker', 'Db_Worker']
+Time elapsed:  34.174213886260986
+['Async_Orchestrator', 'Org_Worker', 'Async_Repo_Worker', 'Filter_Worker', 'Db_Worker']
+Time elapsed:  13.563909769058228

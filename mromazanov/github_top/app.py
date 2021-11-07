@@ -3,19 +3,21 @@ from tkinter import *
 from tkinter import messagebox, scrolledtext
 
 from Modules.Orch import single_thread_orch, thread_orch, process_orch, async_orch
-from Modules.Worker.db_worker import show_db
+from Modules.Worker.db_worker import DbWorker
 
 import time
 
 
 def orch_choose(r_var):
     t0 = time.time()
-    orch_dict[r_var.get()]()
+    orchestrator = orch_dict[r_var.get()]()
+    orchestrator.orch()
     t1 = time.time()
     print("Time elapsed: ", t1 - t0) # CPU seconds elapsed (floating point)
 
 
-orch_dict = {0:single_thread_orch.orch, 1:thread_orch.orch, 2:process_orch.orch, 3:async_orch.orch}
+orch_dict = {0:single_thread_orch.STOrch, 1:thread_orch.TOrch, 2:process_orch.POrch, 3:async_orch.AsyncOrch}
+Db = DbWorker()
 
 window = Tk()
 window.geometry('200x130')
@@ -38,7 +40,7 @@ r3.grid(column=0, row=3, sticky=W)
 button_create = Button(window, text="Create db", command=lambda:orch_choose(r_var))
 button_create.grid(column=0, row=4, sticky=W)
 
-button_show = Button(window, text="Show db", command=lambda:show_db())
+button_show = Button(window, text="Show db", command=lambda:Db.show_db())
 button_show.grid(column=1, row=4)
 window.bind('<Return>', lambda event=None: button_show.invoke())
 

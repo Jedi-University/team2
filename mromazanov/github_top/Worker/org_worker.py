@@ -1,12 +1,10 @@
 from .worker import Worker
-from ..API.API_request import APIRequest
-
 
 class OrgWorker(Worker):
-    def __init__(self) -> None:
+    def __init__(self, api) -> None:
         super().__init__()
         self.type = '_'.join(['Org', self.type])
-        self.API = APIRequest()
+        self.API = api()
 
     def get_orgs(self, pages):
         iteration = 0

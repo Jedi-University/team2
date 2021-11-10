@@ -2,22 +2,31 @@ from concurrent.futures import process, thread
 from tkinter import *
 from tkinter import messagebox, scrolledtext
 
-from Modules.Orch import single_thread_orch, thread_orch, process_orch, async_orch
-from Modules.Worker.db_worker import DbWorker
+#from Modules.Orch import single_thread_orch, thread_orch, process_orch, async_orch
+#from Modules.Worker import org_worker, repo_worker, filter_worker, db_worker
+from Orch import *
+from Worker import *
+from API import *
 
 import time
 
-
 def orch_choose(r_var):
     t0 = time.time()
-    orchestrator = orch_dict[r_var.get()]()
+    orchestrator = orch_dict[r_var.get()](workers)
     orchestrator.orch()
     t1 = time.time()
     print("Time elapsed: ", t1 - t0) # CPU seconds elapsed (floating point)
 
 
-orch_dict = {0:single_thread_orch.STOrch, 1:thread_orch.TOrch, 2:process_orch.POrch, 3:async_orch.AsyncOrch}
-Db = DbWorker()
+orch_dict = {0:STOrch, 1:TOrch, 2:POrch, 3:AsyncOrch}
+workers = {
+    'org':{'st':OrgWorker},
+    'repo':{'st':RepoWorker, 'async':AsyncRepoWorker},
+    'filter':{'st':FilterWorker},
+    'db':{'st':DbWorker},
+    'api':{'st':APIRequest, 'async':AsyncAPIRequest}
+}
+Db = workers['db']['st']()
 
 window = Tk()
 window.geometry('200x130')

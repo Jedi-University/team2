@@ -1,13 +1,11 @@
-from tkinter import Message
 from .worker import Worker
-from ..API.API_request import APIRequest, AsyncAPIRequest
 
 
 class RepoWorker(Worker):
-    def __init__(self) -> None:
+    def __init__(self, api) -> None:
         super().__init__()
         self.type = '_'.join(['Repo', self.type])
-        self.API = APIRequest()
+        self.API = api()
 
 
     def get_repos(self, org_name):
@@ -30,11 +28,11 @@ class RepoWorker(Worker):
         return repos
 
 
-class AsyncRepoWorker(RepoWorker):
-    def __init__(self) -> None:
+class AsyncRepoWorker(Worker):
+    def __init__(self, api) -> None:
         super().__init__()
-        self.type = '_'.join(['Async', self.type])
-        self.API = AsyncAPIRequest()
+        self.type = '_'.join(['Async_Repo', self.type])
+        self.API = api()
 
     async def get_repos(self, org_name,repos):
         page = 1

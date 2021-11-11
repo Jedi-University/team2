@@ -9,24 +9,39 @@ from Worker import *
 from API import *
 
 import time
+import configparser
+
+get_class = lambda x: globals()[x]
 
 def orch_choose(r_var):
     t0 = time.time()
-    orchestrator = orch_dict[r_var.get()](workers)
-    orchestrator.orch()
+    orchestrator = get_class(config['Orchestrators'][orch_dict[r_var.get()]])()
+    orchestrator.orch(workers)
     t1 = time.time()
     print("Time elapsed: ", t1 - t0) # CPU seconds elapsed (floating point)
 
 
-orch_dict = {0:STOrch, 1:TOrch, 2:POrch, 3:AsyncOrch}
+orch_dict = {0:'single_thread', 1:'thread', 2:'process', 3:'async'}
+config = configparser.ConfigParser()
+config.read("config.ini")
 workers = {
-    'org':{'st':OrgWorker},
-    'repo':{'st':RepoWorker, 'async':AsyncRepoWorker},
-    'filter':{'st':FilterWorker},
-    'db':{'st':DbWorker},
-    'api':{'st':APIRequest, 'async':AsyncAPIRequest}
+    'org':get_class(config['Workers']['org'])(),
+    'repo':get_class(config['Workers']['repo'])(get_class(config['Api']['api'])()),
+    'async_repo':get_class(config['Workers']['async_repo'])(get_class(config['Api']['async_api'])()),
+    'filter':get_class(config['Workers']['filter'])(),
+    'db':get_class(config['Workers']['db'])(),
+    'api':get_class(config['Api']['api'])(),
+    'async_api':get_class(config['Api']['async_api'])()
 }
-Db = workers['db']['st']()
+#workers = {
+#    'org':{'st':OrgWorker},
+#    'repo':{'st':RepoWorker, 'async':AsyncRepoWorker},
+#    'filter':{'st':FilterWorker},
+#    'db':{'st':DbWorker},
+#    'api':{'st':APIRequest, 'async':AsyncAPIRequest}
+#}
+
+Db = get_class(config['Workers']['db'])()
 
 window = Tk()
 window.geometry('200x130')

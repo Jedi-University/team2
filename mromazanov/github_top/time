@@ -6,7 +6,7 @@ Time elapsed:  34.945189476013184
 Time elapsed:  34.174213886260986
 ['Async_Orchestrator', 'Org_Worker', 'Async_Repo_Worker', 'Filter_Worker', 'Db_Worker']
 Time elapsed:  13.563909769058228
-после того как изменил импорты:
+first_changes:
 ['Single_Thread_Orchestrator', 'Org_Worker', 'Repo_Worker', 'Filter_Worker', 'Db_Worker']
 Time elapsed:  467.70273780822754
 ['Thread_Orchestrator', 'Org_Worker', 'Repo_Worker', 'Filter_Worker', 'Db_Worker']
@@ -15,3 +15,12 @@ Time elapsed:  72.58980083465576
 Time elapsed:  65.11378026008606
 ['Async_Orchestrator', 'Org_Worker', 'Async_Repo_Worker', 'Filter_Worker', 'Db_Worker']
 Time elapsed:  26.7490131855011
+
+['Single_Thread_Orchestrator']
+Time elapsed:  310.1311318874359
+['Thread_Orchestrator']
+Time elapsed:  41.75811171531677
+['Process_Orchestrator']
+Time elapsed:  43.40116786956787
+['Async_Orchestrator']
+Time elapsed:  16.951956272125244

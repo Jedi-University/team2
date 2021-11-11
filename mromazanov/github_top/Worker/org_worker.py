@@ -1,16 +1,15 @@
 from .worker import Worker
 
 class OrgWorker(Worker):
-    def __init__(self, api) -> None:
+    def __init__(self) -> None:
         super().__init__()
         self.type = '_'.join(['Org', self.type])
-        self.API = api()
 
-    def get_orgs(self, pages):
+    def get_orgs(self, workers, pages):
         iteration = 0
         last_id = 0
         while iteration < pages:
-            response_API = self.API.org_request(last_id).json()
+            response_API = workers['api'].org_request(last_id).json()
             try:
                 last_id = response_API[-1]['id']
                 iteration += 1

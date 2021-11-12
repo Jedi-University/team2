@@ -4,12 +4,10 @@ from .worker import Worker
 
 
 class DatabaseWorker(Worker):
-    def __init__(self, repository_data: list[dict]):
-        self.repository_data: list[dict] = repository_data
-
+    def __init__(self):
         self.db: GitHubDB = GitHubDB(clear_data=True)
 
-    def exec(self) -> None:
+    def exec(self, repository_data: list[dict]) -> None:
         super().exec()
-        topic = [Top(**repo) for repo in self.repository_data]
+        topic = [Top(**repo) for repo in repository_data]
         self.db.add_all(topic)

@@ -1,27 +1,26 @@
+import time
 from configparser import ConfigParser
 
-from db import GitHubDB
 from orchestrator import Orchestrator
-
-
-def show() -> None:
-    db = GitHubDB()
-    top_repos = db.get_whole_top()
-    id, org_name, repo_name, stars_count = "id", "org_name", "repo_name", "stars_count"
-
-    print(f"\nShow top {config['GitHub']['top_number']} repositories:")
-    print(f"{id:>15} {org_name:>30} {repo_name:>30} {stars_count:>15}")
-    print("-" * 95)
-    for repo in top_repos:
-        print(f"{repo.id:>15} {repo.org_name:>30} {repo.repo_name:>30} {repo.stars_count:>15}")
-    print(f"Count: {db.get_top_size()}")
-
+from settings import get_workers
+from show import show
 
 if __name__ == "__main__":
     config = ConfigParser()
-    config.read("settings.ini")
+    config.read("config.ini")
 
-    orchestrator = Orchestrator(config)
-    orchestrator.run()
+    orchestrator = Orchestrator()
+    modes = ["default", "thread", "process", "async"]
+
+    performance = {}
+    for mode in modes:
+        config["Build"]["mode"] = mode
+        workers = get_workers(config)
+        start = time.time()
+        orchestrator.run(workers)
+        performance[mode] = time.time() - start
+        print()
 
     show()
+
+    print(f"\n{performance}")

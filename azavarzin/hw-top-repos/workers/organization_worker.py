@@ -1,5 +1,3 @@
-from pprint import pprint
-
 from api import GitHubAPI
 
 from .worker import Worker
@@ -19,7 +17,7 @@ class OrganizationWorker(Worker):
         return list(self.organizations_with_repository_urls.keys())[-1] \
             if self.organizations_with_repository_urls else 0
 
-    def exec(self) -> dict[int, str]:
+    def exec(self, *args, **kwargs) -> list[str]:
         super().exec()
         if self.number_of_organization <= self.maximum_number_of_organizations_per_request:
             self.update_organization_data(per_page=self.number_of_organization)
@@ -31,7 +29,7 @@ class OrganizationWorker(Worker):
             if remain != 0:
                 self.update_organization_data(per_page=remain)
 
-        data = dict(self.organizations_with_repository_urls)
+        data = list(self.organizations_with_repository_urls.values())
         self.organizations_with_repository_urls = dict()
         return data
 

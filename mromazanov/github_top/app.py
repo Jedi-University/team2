@@ -15,24 +15,30 @@ get_class = lambda x: globals()[x]
 
 def orch_choose(r_var):
     t0 = time.time()
-    orchestrator = get_class(config['Orchestrators'][orch_dict[r_var.get()]])()
-    orchestrator.orch(workers)
+    orchestrator = orch_dict[r_var.get()][0]()
+    orchestrator.orch(*orch_dict[r_var.get()][1:])
     t1 = time.time()
     print("Time elapsed: ", t1 - t0) # CPU seconds elapsed (floating point)
 
 
-orch_dict = {0:'single_thread', 1:'thread', 2:'process', 3:'async'}
 config = configparser.ConfigParser()
 config.read("config.ini")
-workers = {
-    'org':get_class(config['Workers']['org'])(),
-    'repo':get_class(config['Workers']['repo'])(get_class(config['Api']['api'])()),
-    'async_repo':get_class(config['Workers']['async_repo'])(get_class(config['Api']['async_api'])()),
-    'filter':get_class(config['Workers']['filter'])(),
-    'db':get_class(config['Workers']['db'])(),
-    'api':get_class(config['Api']['api'])(),
-    'async_api':get_class(config['Api']['async_api'])()
+orch_dict = {
+    0:[STOrch, OrgWorker(APIRequest()), RepoWorker(APIRequest()), FilterWorker(), DbWorker()],
+    1:[TOrch, OrgWorker(APIRequest()), RepoWorker(APIRequest()), FilterWorker(), DbWorker()],
+    2:[POrch, OrgWorker(APIRequest()), RepoWorker(APIRequest()), FilterWorker(), DbWorker()],
+    3:[AsyncOrch, OrgWorker(APIRequest()), AsyncRepoWorker(AsyncAPIRequest()), FilterWorker(), DbWorker()]
 }
+
+#workers = {
+#    'org':get_class(config['Workers']['org'])(),
+#    'repo':get_class(config['Workers']['repo'])(get_class(config['Api']['api'])()),
+#    'async_repo':get_class(config['Workers']['async_repo'])(get_class(config['Api']['async_api'])()),
+#    'filter':get_class(config['Workers']['filter'])(),
+#    'db':get_class(config['Workers']['db'])(),
+#    'api':get_class(config['Api']['api'])(),
+#    'async_api':get_class(config['Api']['async_api'])()
+#}
 #workers = {
 #    'org':{'st':OrgWorker},
 #    'repo':{'st':RepoWorker, 'async':AsyncRepoWorker},

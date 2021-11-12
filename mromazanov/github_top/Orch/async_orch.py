@@ -10,10 +10,10 @@ class AsyncOrch(Orch):
         super().__init__()
         self.type = '_'.join(['Async', self.type])
 
-    def orch(self, workers):
-        names = super().orch(workers)
+    def orch(self, *args):
+        ctx = super().orch(*args)
         repos = []
-        tasks = [workers['async_repo'].get_repos(name, repos) for name in names]
+        tasks = [args[1].get_repos(name, repos) for name in ctx]
         loop = asyncio.get_event_loop()
         loop.run_until_complete(asyncio.wait(tasks))
-        super().finalize(workers, repos)
+        super().finalize(repos, *args)

@@ -8,13 +8,12 @@ class TOrch(Orch):
         super().__init__()
         self.type = '_'.join(['Thread', self.type])
 
-    def orch(self, workers):
-        names = super().orch(workers)
+    def orch(self, *args):
+        ctx = super().orch(*args)
         repos = []
         with concurrent.futures.ThreadPoolExecutor(max_workers=8) as e:
-            repos.extend(e.map(workers['repo'].get_repos, names))
-        templist = repos
-        repos = []
-        for elem in templist:
-            repos.extend(elem)
-        return super().finalize(workers, repos)
+            repos.extend(e.map(args[1].get_repos, ctx))
+        ctx = []
+        for elem in repos:
+            ctx.extend(elem)
+        return super().finalize(ctx, *args)

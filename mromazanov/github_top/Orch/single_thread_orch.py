@@ -5,9 +5,9 @@ class STOrch(Orch):
         super().__init__()
         self.type = '_'.join(['Single_Thread', self.type])
     
-    def orch(self, workers):
-        names = super().orch(workers)
+    def orch(self, *args):
+        ctx = super().orch(*args)
         repos = []
-        for name in names:
-            repos.extend(workers['repo'].get_repos(name))
-        return super().finalize(workers, repos)
+        for name in ctx:
+            repos.extend(args[1].get_repos(name))
+        return super().finalize(repos, *args)

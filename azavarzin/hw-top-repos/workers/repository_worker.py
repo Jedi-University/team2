@@ -1,13 +1,8 @@
-from api import GitHubAPI
-
+from .request_worker import RequestWorker
 from .utils import mapping_repo
-from .worker import Worker
 
 
-class RepositoryWorker(Worker):
-    def __init__(self, api: GitHubAPI):
-        self.api: GitHubAPI = api
-
+class RepositoryWorker(RequestWorker):
     def exec(self, url: str) -> list[dict]:
         params = {"page": 1}
         repository_data: list[dict] = list()

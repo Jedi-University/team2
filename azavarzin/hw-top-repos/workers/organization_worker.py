@@ -1,14 +1,14 @@
 from api import GitHubAPI
 
-from .worker import Worker
+from .request_worker import RequestWorker
 
 
-class OrganizationWorker(Worker):
+class OrganizationWorker(RequestWorker):
     def __init__(self, number_of_organization: int, api: GitHubAPI):
+        super().__init__(api)
         self.number_of_organization: int = number_of_organization
-        self.api: GitHubAPI = api
 
-        self.url_organizations: str = "https://api.github.com/organizations"
+        self.url: str = "https://api.github.com/organizations"
         self.maximum_number_of_organizations_per_request: int = 100
         self.organizations_with_repository_urls: dict[int, str] = dict()
 
@@ -18,7 +18,6 @@ class OrganizationWorker(Worker):
             if self.organizations_with_repository_urls else 0
 
     def exec(self, *args, **kwargs) -> list[str]:
-        super().exec()
         if self.number_of_organization <= self.maximum_number_of_organizations_per_request:
             self.update_organization_data(per_page=self.number_of_organization)
         else:
@@ -35,6 +34,6 @@ class OrganizationWorker(Worker):
 
     def update_organization_data(self, per_page: int = 100) -> None:
         params = {"per_page": per_page, "since": self.since}
-        response = self.api.get(self.url_organizations, params=params)
+        response = self.api.get(url=self.url, params=params)
         data = {org["id"]: org["repos_url"] for org in response}
         self.organizations_with_repository_urls.update(data)

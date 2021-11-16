@@ -1,6 +1,5 @@
 from api import AsyncGitHubAPI
 from api import DefaultGitHubAPI
-from workers import AsyncOrganizationWorker
 from workers import AsyncRepositoryWorker
 from workers import DatabaseWorker
 from workers import DefaultRepositoryWorkerWrapper
@@ -24,28 +23,17 @@ def get_workers(config) -> list[Worker]:
 
     api = apis.get(mode, apis["default"])(config)
     repos_worker = RepositoryWorker(api)
-    org_worker = OrganizationWorker(number_of_organization, api)
+    org_worker = OrganizationWorker(number_of_organization, apis["default"])
+    filter_worker = TopFilterWorker(top_number)
+    db_worker = DatabaseWorker()
 
-    setting_up_workers: dict[str, list] = {
-        "default": [
-            org_worker,
-            DefaultRepositoryWorkerWrapper(repos_worker)
-        ],
-        "thread": [
-            org_worker,
-            ThreadRepositoryWorkerWrapper(repos_worker)
-        ],
-        "process": [
-            org_worker,
-            ProcessRepositoryWorkerWrapper(repos_worker)
-        ],
-        "async": [
-            AsyncOrganizationWorker(number_of_organization, api),
-            AsyncRepositoryWorker(api)
-        ]
+    setting_up_workers: dict[str, Worker] = {
+        "default": DefaultRepositoryWorkerWrapper(repos_worker),
+        "thread": ThreadRepositoryWorkerWrapper(repos_worker),
+        "process": ProcessRepositoryWorkerWrapper(repos_worker),
+        "async": AsyncRepositoryWorker(api)
     }
 
-    workers = setting_up_workers[mode]
-    workers.extend([TopFilterWorker(top_number), DatabaseWorker()])
+    workers = [org_worker, setting_up_workers[mode], filter_worker, db_worker]
 
     return workers

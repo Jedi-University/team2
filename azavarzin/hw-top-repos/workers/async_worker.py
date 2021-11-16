@@ -2,6 +2,7 @@ import asyncio
 from abc import ABC, abstractmethod
 
 from api import GitHubAPI
+
 from .worker import Worker
 
 
@@ -10,7 +11,6 @@ class AsyncWorker(Worker, ABC):
         self.api: GitHubAPI = api
 
     def exec(self, *args, **kwargs) -> dict[int, str]:
-        Worker.exec(self, *args, **kwargs)
         loop = asyncio.get_event_loop()
         data = loop.run_until_complete(self.get_data(*args, **kwargs))
         return data

@@ -8,6 +8,5 @@ class DatabaseWorker(Worker):
         self.db: GitHubDB = GitHubDB(clear_data=True)
 
     def exec(self, repository_data: list[dict]) -> None:
-        super().exec()
         topic = [Top(**repo) for repo in repository_data]
         self.db.add_all(topic)

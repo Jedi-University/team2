@@ -1,0 +1,26 @@
+17-Nov-21 20:59:41: DEBUG: Start pipeline with mode='default'
+17-Nov-21 20:59:42: DEBUG: workers.organization_worker.OrganizationWorker is working
+17-Nov-21 20:59:43: DEBUG: workers.default_repository_worker_wrapper.DefaultRepositoryWorkerWrapper is working
+17-Nov-21 21:10:38: DEBUG: workers.top_filter_worker.TopFilterWorker is working
+17-Nov-21 21:10:38: DEBUG: workers.database_worker.DatabaseWorker is working
+17-Nov-21 21:10:38: DEBUG: Elapsed time is 655.92 seconds.
+17-Nov-21 21:10:38: DEBUG: Start pipeline with mode='thread'
+17-Nov-21 21:10:38: DEBUG: workers.organization_worker.OrganizationWorker is working
+17-Nov-21 21:10:39: DEBUG: workers.thread_repository_worker_wrapper.ThreadRepositoryWorkerWrapper is working
+17-Nov-21 21:14:10: DEBUG: workers.top_filter_worker.TopFilterWorker is working
+17-Nov-21 21:14:10: DEBUG: workers.database_worker.DatabaseWorker is working
+17-Nov-21 21:14:10: DEBUG: Elapsed time is 212.49 seconds.
+17-Nov-21 21:14:10: DEBUG: Start pipeline with mode='process'
+17-Nov-21 21:14:10: DEBUG: workers.organization_worker.OrganizationWorker is working
+17-Nov-21 21:14:11: DEBUG: workers.process_repository_worker_wrapper.ProcessRepositoryWorkerWrapper is working
+17-Nov-21 21:17:38: DEBUG: workers.top_filter_worker.TopFilterWorker is working
+17-Nov-21 21:17:38: DEBUG: workers.database_worker.DatabaseWorker is working
+17-Nov-21 21:17:38: DEBUG: Elapsed time is 207.8 seconds.
+17-Nov-21 21:17:38: DEBUG: Start pipeline with mode='async'
+17-Nov-21 21:17:38: DEBUG: workers.organization_worker.OrganizationWorker is working
+17-Nov-21 21:17:39: DEBUG: workers.async_repository_worker.AsyncRepositoryWorker is working
+17-Nov-21 21:18:00: DEBUG: workers.top_filter_worker.TopFilterWorker is working
+17-Nov-21 21:18:00: DEBUG: workers.database_worker.DatabaseWorker is working
+17-Nov-21 21:18:00: DEBUG: Elapsed time is 21.83 seconds.
+17-Nov-21 21:18:00: DEBUG: Results for each mode:
+{'default': 655.92, 'thread': 212.49, 'process': 207.8, 'async': 21.83}

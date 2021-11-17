@@ -1,9 +1,14 @@
 from workers import Worker
 
+import logging
+
+logger = logging.getLogger("Top GitHub")
+
 
 class Orchestrator:
-    def run(self, workers: list[Worker]) -> None:
+    @staticmethod
+    def run(workers: list[Worker]) -> None:
         ctx = None
         for worker in workers:
-            print(f"{type(worker)}")
+            logger.debug(f"{str(worker).split()[0][1:]} is working")
             ctx = worker.exec(ctx)

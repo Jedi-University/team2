@@ -5,22 +5,36 @@ from orchestrator import Orchestrator
 from settings import get_workers
 from show import show
 
+import logging
+
+logging.basicConfig(filename='main.log',
+                    filemode='w',
+                    format='%(asctime)s: %(levelname)s: %(message)s',
+                    datefmt='%d-%b-%y %H:%M:%S',
+                    level=logging.DEBUG)
+logger = logging.getLogger("Top GitHub")
+
+for key in logging.Logger.manager.loggerDict:
+    if key != "Top GitHub":
+        logging.getLogger(key).setLevel(logging.CRITICAL)
+
 if __name__ == "__main__":
     config = ConfigParser()
     config.read("config.ini")
 
-    orchestrator = Orchestrator()
     modes = ["default", "thread", "process", "async"]
 
     performance = {}
     for mode in modes:
         config["Build"]["mode"] = mode
+        logger.debug(f"Start pipeline with {mode=}")
         workers = get_workers(config)
         start = time.time()
-        orchestrator.run(workers)
-        performance[mode] = time.time() - start
-        print()
+        Orchestrator.run(workers)
+        performance[mode] = round(time.time() - start, 2)
+        logger.debug(f"Elapsed time is {performance[mode]} seconds.")
 
+    # выводит в консоль
     show()
 
-    print(f"\n{performance}")
+    logger.debug(f"Results for each mode:\n{performance}")

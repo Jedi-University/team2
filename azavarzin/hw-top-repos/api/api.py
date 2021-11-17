@@ -7,5 +7,5 @@ class GitHubAPI(ABC):
         self.headers = {"Authorization": f"token {config['GitHub']['access_token']}"}
 
     @abstractmethod
-    def get(self, url, params=None):
+    def get(self, *args, **kwargs):
         pass

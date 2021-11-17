@@ -16,24 +16,26 @@ def get_workers(config) -> list[Worker]:
     number_of_organization = int(config["GitHub"]["number_of_organization"])
     top_number = int(config["GitHub"]["top_number"])
 
-    apis = {
-        "default": DefaultGitHubAPI,
-        "async": AsyncGitHubAPI
-    }
+    api = DefaultGitHubAPI(config)
+    async_api = AsyncGitHubAPI(config)
 
-    api = apis.get(mode, apis["default"])(config)
-    repos_worker = RepositoryWorker(api)
-    org_worker = OrganizationWorker(number_of_organization, apis["default"])
+    if mode == "async":
+        repos_worker = RepositoryWorker(async_api)
+    else:
+        repos_worker = RepositoryWorker(api)
+
+    org_worker = OrganizationWorker(number_of_organization, api)
+
     filter_worker = TopFilterWorker(top_number)
     db_worker = DatabaseWorker()
 
-    setting_up_workers: dict[str, Worker] = {
+    define_repository_worker: dict[str, Worker] = {
         "default": DefaultRepositoryWorkerWrapper(repos_worker),
         "thread": ThreadRepositoryWorkerWrapper(repos_worker),
         "process": ProcessRepositoryWorkerWrapper(repos_worker),
-        "async": AsyncRepositoryWorker(api)
+        "async": AsyncRepositoryWorker(async_api)
     }
 
-    workers = [org_worker, setting_up_workers[mode], filter_worker, db_worker]
+    workers = [org_worker, define_repository_worker[mode], filter_worker, db_worker]
 
     return workers

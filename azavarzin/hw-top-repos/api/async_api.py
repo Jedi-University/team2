@@ -1,16 +1,20 @@
-import aiohttp
+from configparser import ConfigParser
 
 from .api import GitHubAPI
 
 
 class AsyncGitHubAPI(GitHubAPI):
-    async def get(self, url: str, params=None):
+    def __init__(self, config: ConfigParser):
+        super().__init__(config)
+
+    def __delete__(self, instance):
+        instance.session.close()
+
+    async def get(self, url: str, session, params=None):
         if params is None:
             params = {}
 
-        async with aiohttp.ClientSession(headers=self.headers) as session:
-            async with session.get(url, params=params) as response:
-                assert response.status == 200, f"{response.json()}"
-                data = await response.json()
+        async with session.get(url, headers=self.headers, params=params) as response:
+            data = await response.json()
 
         return data

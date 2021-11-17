@@ -1,21 +1,33 @@
+import asyncio
 from functools import reduce
 
-from .async_worker import AsyncWorker
+import aiohttp
+
+from .request_worker import RequestWorker
 from .utils import mapping_repo
 
 
-class AsyncRepositoryWorker(AsyncWorker):
+class AsyncRepositoryWorker(RequestWorker):
+    def exec(self, *args, **kwargs) -> dict[int, str]:
+        return asyncio.run(self.get_data(*args, **kwargs))
+
     async def get_data(self, repository_urls: list[str]) -> list[dict]:
-        data = [await self.get_repository(url) for url in repository_urls]
+        tasks = []
+        async with aiohttp.ClientSession() as session:
+            for url in repository_urls:
+                tasks.append(asyncio.create_task(self.get_repository(url, session)))
+
+            data = await asyncio.gather(*tasks)
+
         return reduce(lambda a, b: a + b, data)
 
-    async def get_repository(self, url: str) -> list[dict]:
+    async def get_repository(self, url: str, session) -> list[dict]:
         params = {"page": 1}
         repository_data: list[dict] = list()
-        response = await self.api.get(url)
+        response = await self.api.get(url, session)
         while response:
             params["page"] += 1
             repository_data.extend(map(mapping_repo, response))
-            response = await self.api.get(url, params=params)
+            response = await self.api.get(url, session, params=params)
 
         return repository_data

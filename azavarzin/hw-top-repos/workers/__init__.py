@@ -1,5 +1,4 @@
 from .async_repository_worker import AsyncRepositoryWorker
-from .async_worker import AsyncWorker
 from .database_worker import DatabaseWorker
 from .default_repository_worker_wrapper import DefaultRepositoryWorkerWrapper
 from .organization_worker import OrganizationWorker

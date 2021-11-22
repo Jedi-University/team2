@@ -1,11 +1,10 @@
+import logging
 import time
 from configparser import ConfigParser
 
 from orchestrator import Orchestrator
 from settings import get_workers
 from show import show
-
-import logging
 
 logging.basicConfig(filename='main.log',
                     filemode='w',
@@ -25,6 +24,7 @@ if __name__ == "__main__":
     modes = ["default", "thread", "process", "async"]
 
     performance = {}
+    logger.debug(f"Number of organizations: {config['GitHub']['number_of_organization']}")
     for mode in modes:
         config["Build"]["mode"] = mode
         logger.debug(f"Start pipeline with {mode=}")
@@ -33,7 +33,7 @@ if __name__ == "__main__":
         Orchestrator.run(workers)
         performance[mode] = round(time.time() - start, 2)
         logger.debug(f"Elapsed time is {performance[mode]} seconds.")
-
+        time.sleep(60)
     # выводит в консоль
     show()
 

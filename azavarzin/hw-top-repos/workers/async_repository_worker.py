@@ -12,11 +12,8 @@ class AsyncRepositoryWorker(RequestWorker):
         return asyncio.run(self.get_data(*args, **kwargs))
 
     async def get_data(self, repository_urls: list[str]) -> list[dict]:
-        tasks = []
         async with aiohttp.ClientSession() as session:
-            for url in repository_urls:
-                tasks.append(asyncio.create_task(self.get_repository(url, session)))
-
+            tasks = [asyncio.create_task(self.get_repository(url, session)) for url in repository_urls]
             data = await asyncio.gather(*tasks)
 
         return reduce(lambda a, b: a + b, data)

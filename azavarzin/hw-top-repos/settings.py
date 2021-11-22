@@ -19,13 +19,8 @@ def get_workers(config) -> list[Worker]:
     api = DefaultGitHubAPI(config)
     async_api = AsyncGitHubAPI(config)
 
-    if mode == "async":
-        repos_worker = RepositoryWorker(async_api)
-    else:
-        repos_worker = RepositoryWorker(api)
-
+    repos_worker = RepositoryWorker(api)
     org_worker = OrganizationWorker(number_of_organization, api)
-
     filter_worker = TopFilterWorker(top_number)
     db_worker = DatabaseWorker()
 

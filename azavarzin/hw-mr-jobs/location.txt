@@ -1,0 +1,6 @@
+"United Kingdom"	2
+"China"	5
+"United States"	20
+"UNKNOWN"	6
+"Japan"	5
+"Germany"	2

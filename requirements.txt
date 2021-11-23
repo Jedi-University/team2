@@ -7,7 +7,9 @@ charset-normalizer==2.0.7
 frozenlist==1.2.0
 greenlet==1.1.2
 idna==3.3
+mrjob==0.7.4
 multidict==5.2.0
+PyYAML==6.0
 requests==2.26.0
 SQLAlchemy==1.4.26
 typing-extensions==3.10.0.2

@@ -1,4 +1,4 @@
-from gh_token import gh_token as token
+from settings.gh_token import gh_token as token
 
 base_uri = "https://api.github.com"
 org_uri = "/organizations"

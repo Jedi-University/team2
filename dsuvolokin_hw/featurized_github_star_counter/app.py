@@ -1,11 +1,11 @@
-from _settings import mode
+from modules.workers import Mt_worker,Async_worker,Mp_worker
+from modules.orchestrator import Orchestrator
+from settings._settings import mode
 
-if mode == 'async':
-	from async_pipeline import main
-elif mode == 'm_thr':
-	from m_thread_pipeline import main
-elif mode == 'm_prc':
-	from m_proc_pipeline import main
 
 if __name__ == '__main__':
-  main()
+    d = { Mt_worker.mode : Mt_worker, Async_worker.mode : Async_worker, Mp_worker.mode : Mp_worker}
+    o = Orchestrator()
+    w = o.tune(mode,d)
+    print(f'using {w.mode} mode')
+    w.work()

@@ -1,25 +1,36 @@
 from mrjob.job import MRJob
-import requests
+from mrjob.step import MRStep
+from location import get_location_by_ip
 
 
 class MRLocation(MRJob):
 
-    URL = "https://ip2c.org/"
+    FILES = ["location.py"]
 
-    def mapper(self, _, line):
-        ip = line.split()[2]
-        location = requests.get(f"{MRLocation.URL}{ip}").text.split(";")[-1]
-        yield location, 1
+    def steps(self):
+        return [
+            MRStep(
+                mapper=self.mapper_id,
+                combiner=self.reducer,
+                reducer=self.reducer,
+            ),
+            MRStep(
+                mapper=self.mapper_location,
+                combiner=self.reducer,
+                reducer=self.reducer,
+            ),
+        ]
 
-    def combiner(self, key, values):
+    def mapper_id(self, _, line):
+        yield line.split()[-1], 1
+
+    def mapper_location(self, ip, count):
+        location = get_location_by_ip(ip)
+        yield location, count
+
+    def reducer(self, key, values):
         yield key, sum(values)
 
 
-    def reducer(self, key, values):
-        count = sum(values)
-        if count > 1:    
-            yield key, count
-
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     MRLocation.run()

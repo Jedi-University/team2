@@ -1,7 +1,6 @@
 from mrjob.job import MRJob
 from mrjob.step import MRStep
 from mrjob.protocol import JSONValueProtocol
-from location import get_location_by_ip
 
 
 class MRTimeLocation(MRJob):
@@ -39,6 +38,7 @@ class MRTimeLocation(MRJob):
             yield (ip, hour), 1
     
     def mapper_location_with_hour(self, ip_with_hour, count):
+        from location import get_location_by_ip
         ip, hour = ip_with_hour
         location = get_location_by_ip(ip)
         yield (location, hour), count        

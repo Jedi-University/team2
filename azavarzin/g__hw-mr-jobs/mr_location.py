@@ -1,6 +1,5 @@
 from mrjob.job import MRJob
 from mrjob.step import MRStep
-from location import get_location_by_ip
 
 
 class MRLocation(MRJob):
@@ -25,6 +24,7 @@ class MRLocation(MRJob):
         yield line.split()[-1], 1
 
     def mapper_location(self, ip, count):
+        from location import get_location_by_ip
         location = get_location_by_ip(ip)
         yield location, count
 

@@ -37,9 +37,10 @@ class MRClickCount(MRJob):
         yield key[0], {key[1]:sum(values)}
 
     def reducer3(self, key, values):
-        key = f'{key}:00'
-        yield None, (key, list(values))
-        # yield key, list(values)
+        if int(key) >= 8 and int(key) <= 19:
+            key = f'{key}:00'
+            yield None, (key, list(values))
+            # yield key, list(values)
     
     def reducer4(self, _, values):
         yield None, dict(values)

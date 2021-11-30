@@ -170,3 +170,10 @@ todo
 /.eggs/
 /.tox/
 venv
+mromazanov/dockerfile
+mromazanov/req
+mromazanov/mrjob/clicks.txt
+mromazanov/mrjob/out
+mromazanov/mrjob/test_clicks
+mromazanov/mrjob/test.py
+mromazanov/mrjob/testclick

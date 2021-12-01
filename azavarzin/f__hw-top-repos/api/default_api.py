@@ -4,6 +4,7 @@ from .api import GitHubAPI
 
 
 class DefaultGitHubAPI(GitHubAPI):
+
     def get(self, url: str, params=None):
         if params is None:
             params = {}

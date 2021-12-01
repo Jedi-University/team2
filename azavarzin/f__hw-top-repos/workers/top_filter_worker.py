@@ -2,6 +2,7 @@ from .worker import Worker
 
 
 class TopFilterWorker(Worker):
+
     def __init__(self, top_count: int):
         self.top_count = top_count
 

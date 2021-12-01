@@ -17,6 +17,7 @@ for key in logging.Logger.manager.loggerDict:
     if key != "Top GitHub":
         logging.getLogger(key).setLevel(logging.CRITICAL)
 
+
 if __name__ == "__main__":
     config = ConfigParser()
     config.read("config.ini")
@@ -26,14 +27,15 @@ if __name__ == "__main__":
     performance = {}
     logger.debug(f"Number of organizations: {config['GitHub']['number_of_organization']}")
     for mode in modes:
+        logger.debug("=" * 50)
         config["Build"]["mode"] = mode
-        logger.debug(f"Start pipeline with {mode=}")
+        logger.debug(f"Start pipeline with {mode = }")
         workers = get_workers(config)
         start = time.time()
         Orchestrator.run(workers)
         performance[mode] = round(time.time() - start, 2)
         logger.debug(f"Elapsed time is {performance[mode]} seconds.")
-        time.sleep(60)
+
     # выводит в консоль
     show()
 

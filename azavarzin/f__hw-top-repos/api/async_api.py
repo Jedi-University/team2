@@ -4,11 +4,9 @@ from .api import GitHubAPI
 
 
 class AsyncGitHubAPI(GitHubAPI):
+
     def __init__(self, config: ConfigParser):
         super().__init__(config)
-
-    def __delete__(self, instance):
-        instance.session.close()
 
     async def get(self, url: str, session, params=None):
         if params is None:

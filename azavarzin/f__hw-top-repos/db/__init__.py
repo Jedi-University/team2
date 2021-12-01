@@ -1,1 +1,1 @@
-from .github_db import GitHubDB, Top
+from .github_db import GitHubTopicDB, Top

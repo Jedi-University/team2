@@ -3,6 +3,7 @@ from .utils import mapping_repo
 
 
 class RepositoryWorker(RequestWorker):
+
     def exec(self, url: str) -> list[dict]:
         params = {"page": 1}
         repository_data: list[dict] = list()

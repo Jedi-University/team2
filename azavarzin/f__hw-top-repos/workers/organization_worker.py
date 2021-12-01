@@ -4,6 +4,7 @@ from .request_worker import RequestWorker
 
 
 class OrganizationWorker(RequestWorker):
+
     def __init__(self, number_of_organization: int, api: GitHubAPI):
         super().__init__(api)
         self.number_of_organization: int = number_of_organization

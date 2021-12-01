@@ -8,6 +8,7 @@ from .utils import mapping_repo
 
 
 class AsyncRepositoryWorker(RequestWorker):
+
     def exec(self, *args, **kwargs) -> dict[int, str]:
         return asyncio.run(self.get_data(*args, **kwargs))
 

@@ -1,9 +1,9 @@
-from db import GitHubDB
+from db import GitHubTopicDB
 
 
 def show() -> None:
-    db = GitHubDB()
-    top_repos = db.get_whole_top()
+    db = GitHubTopicDB()
+    top_repos = db.get_all_top()
     count = db.get_top_size()
     id, org_name, repo_name, stars_count = "id", "org_name", "repo_name", "stars_count"
 

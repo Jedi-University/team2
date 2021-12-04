@@ -5,7 +5,7 @@ class DefaultRepositoryWorkerWrapper(WorkerWrapper):
 
     def exec(self, repository_urls: list[str]) -> list[dict]:
         repository_data = []
-        for i, url in enumerate(repository_urls, start=1):
+        for url in repository_urls:
             repository_data.extend(self.worker.exec(url))
 
         return repository_data

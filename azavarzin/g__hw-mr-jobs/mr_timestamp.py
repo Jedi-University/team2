@@ -31,23 +31,24 @@ class MRTimeLocation(MRJob):
         ]
 
     def mapper_id_with_hour(self, _, line):
+        # line: [2021-11-22 08:57:08.916514] 202.6.195.211
         data = line.split()
         ip = data[-1]
         hour = data[1][:2]
         if 8 <= int(hour) <= 18:
             yield (ip, hour), 1
     
-    def mapper_location_with_hour(self, ip_with_hour, count):
+    def mapper_location_with_hour(self, pair_ip_hour, count):
         from location import get_location_by_ip
-        ip, hour = ip_with_hour
+        ip, hour = pair_ip_hour
         location = get_location_by_ip(ip)
         yield (location, hour), count        
         
     def reducer(self, key, values):
         yield key, sum(values)
     
-    def mapper_for_hour(self, location_with_hour, count):
-        location, hour = location_with_hour
+    def mapper_for_hour(self, pair_location_hour, count):
+        location, hour = pair_location_hour
         yield hour, {location: count}
 
     def reducer_for_hour(self, hour, data):

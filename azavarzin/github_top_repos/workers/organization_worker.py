@@ -1,4 +1,4 @@
-from api import GitHubAPI
+from azavarzin.github_top_repos.api import GitHubAPI
 
 from .request_worker import RequestWorker
 

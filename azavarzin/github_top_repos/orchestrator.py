@@ -1,6 +1,6 @@
 import logging
 
-from workers import Worker
+from azavarzin.github_top_repos import Worker
 
 logger = logging.getLogger("Top GitHub")
 

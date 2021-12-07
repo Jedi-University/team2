@@ -34,7 +34,6 @@ if __name__ == '__main__':
     top_repos = sorted_repos_df.head(top_number)
 
     top = list(map(lambda row: row.asDict(), top_repos))
-    pprint(top)
-
+    
     db = DatabaseWorker()
     db.exec(top)

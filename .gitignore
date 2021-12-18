@@ -132,6 +132,7 @@ dmypy.json
 *.ini
 
 clicks.txt
+config.py
 
 logs
 plugins

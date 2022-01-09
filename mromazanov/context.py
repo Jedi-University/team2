@@ -4,7 +4,7 @@ import itertools
 def func1(x1,x2,x3):
     def func2(x):
         return [x+x1, x+x2, x+x3]
-    return func1
+    return func2
 
 
 def unlist(x):
